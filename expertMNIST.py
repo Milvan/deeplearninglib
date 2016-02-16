@@ -1,10 +1,7 @@
-import matplotlib
 import mlp
-matplotlib.use("Agg")
 import tensorflow as tf
 import numpy as np
 import tensorflow.examples.tutorials.mnist.input_data as input_data
-import matplotlib.pyplot as plt
 
 
 mnist = input_data.read_data_sets('MNIST_data', one_hot=True)
@@ -15,8 +12,8 @@ x = tf.placeholder(tf.float32,  [None,784])
 # y_ is the value y should be
 y_ = tf.placeholder(tf.float32, [None, 10])
 
-#mlp = mlp.MLP(x, y_, [(784,500,tf.nn.sigmoid), (500, 10,tf.nn.softmax)]) #94.7%
-mlp = mlp.MLP(x, y_, [(784, 10,tf.nn.softmax)]) #92.2%
+mlp = mlp.MLP(x, y_, [(784,500,tf.nn.sigmoid), (500, 10,tf.nn.softmax)]) #94.7%
+#mlp = mlp.MLP(x, y_, [(784, 10,tf.nn.softmax)]) #92.2%
 #mlp = mlp.MLP(x, y_, [(784,500,tf.nn.sigmoid), (500,250,tf.nn.sigmoid),(250, 10,tf.nn.softmax)]) #77%
 #mlp = mlp.MLP(x, y_, [(784,900,tf.nn.sigmoid), (900, 10,tf.nn.softmax)]) #90.8%
 #mlp = mlp.MLP(x, y_, [(784,1500,tf.nn.sigmoid), (1500,500,tf.nn.sigmoid),(500, 10,tf.nn.softmax)]) #
@@ -35,9 +32,9 @@ init = tf.initialize_all_variables()
 sess = tf.Session()
 sess.run(init)
 
-for i in range(1000):
+for i in range(2000):
 	batch_xs, batch_ys = mnist.train.next_batch(1000)
-	sess.run(mlp.train(), feed_dict={x:batch_xs, y_:batch_ys})
+	sess.run(mlp.train_gd(0.001), feed_dict={x:batch_xs, y_:batch_ys})
 	if i%31==0:
 		#argmax returns the index of the largest value in the supplied vector in the given dimension.
 		#for us this mean that the left value will be the predicted value of the nn and the right value will be the actual value.
@@ -47,10 +44,3 @@ for i in range(1000):
 
 		print "iteration ", i, (sess.run(accuracy, feed_dict = {x: mnist.test.images, y_: mnist.test.labels}))
 
-#W_trained = np.array(sess.run(W)).reshape(28,28,10)
-#
-#print "W_trained shape = ", W_trained.shape
-#print W_trained
-#for i in range(10):
-#	plt.matshow(W_trained[:,:,i])
-#	plt.savefig("./plot/"+str(i)+".png")

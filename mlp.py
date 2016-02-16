@@ -29,8 +29,8 @@ class MLP(object):
 			y = activation(tf.matmul(y,self.Weights[i])+self.biases[i])
 		return y
 	
-	def train(self):
+	def train_gd(self, train_speed):
 		cross_entropy = -tf.reduce_sum(self.labels_placeholder*tf.log(self.run()))
-		train_step = tf.train.GradientDescentOptimizer(0.0001).minimize(cross_entropy)
+		train_step = tf.train.GradientDescentOptimizer(train_speed).minimize(cross_entropy)
 		return train_step
 		
